@@ -6,7 +6,7 @@ markdown: kramdown
 title: "IT Blog"
 # 자신의 blog title.
 
-baseurl: /
+#baseurl: /
 
 description: "Development & Technical Training"
 # blog home에 표시될 blog에 대한 전반적인 설명.
