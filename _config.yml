@@ -1,100 +1,86 @@
-markdown: kramdown
-# kramdown : markdown의 개조판.
-# markdown에서 불편한 사항을 개선한 형태
+#
+# This file contains configuration flags to customize your site
+#
 
-# Website info
-title: "IT Blog"
-# 자신의 blog title.
+# Name of your site (displayed in the header)
+name: guitarhyo
 
-#baseurl: /
+# Short bio or description (displayed in the header)
+description: WebDeveloper
 
-description: "Development & Technical Training"
-# blog home에 표시될 blog에 대한 전반적인 설명.
+# URL of your avatar or profile pic (you could use your GitHub profile pic)
+avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
 
-#cover: assets/built/images/blog-cover.png
-# blog home에 표시될 blog cover image.
+#
+# Flags below are optional
+#
 
-#logo:
-#logo_dark:
-
-#favicon: assets/built/images/favicon.jpg
-# favicon으로 사용할 image
-
-# Social info
-#navigation: True
-# Navigation bar link를 보여줄건지 여부
-
-#subscribers: True
-# subscriber 기능을 사용할건지의 여부
-# 저는 약간의 수정을 통해 subscriber 기능대신
-# lunr.js를 이용한 검색 기능으로 대체 사용했습니다.
-# 검색기능으로 대체하기 위해서
-# `_includes/subscribe-form.html` 파일의 수정이 필요합니다
-
-#twitter:
-#facebook:
-# 만약 twitter와 facebook을 이용하면 username을 입력
-
-# Disqus
-#disqus: True
-#disqus_shortname: sunghoons-blog
-# disqus는 온라인 댓글 시스템. 댓글 기능을 사용하기 위해
-# disqus를 이용할 것인지 여부와 만약 사용하면
-# disqus shortname을 입력 ( disqus username이 아님 )
+# Includes an icon in the footer for each username you enter
+footer-links:
+  dribbble:
+  email:
+  facebook: "HyoNam Kim"
+  flickr:
+  github: 
+  instagram:
+  linkedin:
+  pinterest:
+  rss: # just type anything here for a working RSS icon
+  twitter: 
+  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+  youtube: # channel/<your_long_string> or user/<user-name>
+  googleplus: # anything in your profile username that comes after plus.google.com/
 
 
-# Google Analytics
-#google_analytics:  # replace with your GA tracking identifier
-# Google Analytics을 사용할 경우 GA tracking identifier를 입력
+# Enter your Disqus shortname (not your username) to enable commenting on posts
+# You can find your shortname on the Settings page of your Disqus account
+disqus:
 
-# Permalinks
-#permalink: /:title
-# permalink: /author/:author
-# permalink: /tag/:title
-# 각각의 post에 고정주소를 어떤 방식으로 할당할 것인지를 결정
-# 이 값을 바꾸면 작성한 포스트의 저장위치나 파일이름이 변경된다.
+# Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
+google_analytics:
 
-# gems and other configs
-#plugins: [jekyll-paginate, jekyll-feed, jekyll-gist]
-#exclude: [vendor]
+# Your website URL (e.g. http://barryclark.github.io or http://www.barryclark.co)
+# Used for Sitemap.xml and your RSS feed
+url:
 
-#feed:
-#  path: feed.xml
+# If you're hosting your site at a Project repository on GitHub pages
+# (http://yourusername.github.io/repository-name)
+# and NOT your User repository (http://yourusername.github.io)
+# then add in the baseurl here, like this: "/repository-name"
+baseurl: ""
 
-# Travis-CI 설정입니다.
-#safe: False
-#lsi: False
+#
+# !! You don't need to change any of the configuration flags below !!
+#
 
-#username: moon9342
-#repo: GitHubPageMaker
-# username : travis-ci와 연동하는 github의 username
-# repo: travis-ci와 연동하는 github의 repository이름
-# https://github.com/<username>/<repository>
+permalink: /:title/
 
-#branch: master
-# 사용할 branch명
+# The release of Jekyll Now that you're using
+version: v1.2.0
 
-#relative_source: 
+# Jekyll 3 now only supports Kramdown for Markdown
+kramdown:
+  # Use GitHub flavored markdown, including triple backtick fenced code blocks
+  input: GFM
+  # Jekyll 3 and GitHub Pages now only support rouge for syntax highlighting
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    # Use existing pygments syntax highlighting css
+    css_class: 'highlight'
 
-#destination: ./output/
-# compile된 결과가 생성되는 폴더
-# 이 폴더안으로 우리가 운영하는 블로그 내용이 컴파일되서 들어간다.
-# 이 폴더안의 내용을 github repository(https://username.github.io)에 push
-# 만약 Travis-CI를 이용할 예정이면 이 부분을 git submodule로
-# github repository(https://username.github.io)에 연결해야 한다.
+# Set the Sass partials directory, as we're using @imports
+sass:
+  style: :expanded # You might prefer to minify using :compressed
 
-#production_url:  https://moon9342.github.io/
-#source_url:  https://github.com/moon9342/GitHubPageMaker/
+# Use the following plug-ins
+gems:
+  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
+  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
 
-# exclude는 Jekyll컴파일 시 destination에 포함될 필요가
-# 없는것들을 명시한다. (node_modules는 포함시키자)
-#exclude:
-#  - README.md
-#  - Rakefile
-#  - Gemfile
-#  - Gemfile.lock
-#  - changelog.md
-#  - "*.Rmd"
-#  - vendor
-#  - .travis.yml
-#  - node_modules
+# Exclude these files from your production _site
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - CNAME
