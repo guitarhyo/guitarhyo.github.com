@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>vue</title>
+<link rel="stylesheet" href="https://hyobase-572cb.firebaseapp.com/resources/css/default.css" type="text/css" />
+<script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+<div class="header">
+<span class="logo">조건문과 반복문</span>
+</div>
+
+
+<div id="app-3">
+  <p v-if="seen">이제 나를 볼 수 있어요</p>
+  <p v-if="test">추가??</p>
+</div>
+<script type="text/javascript">
+
+var app3;	
+	
+window.onload = function () {
+	app3 = new Vue({
+		  el: '#app-3',
+		  data: {
+		    seen: false  //true false에 따라 표출 여부 결정
+		    ,test : 0
+		  }
+		});
+	app3.seen = true;  //true false에 따라 표출 여부 결정
+	app3.test = 2;  //0일땐 비활성  1 이상은 활성
+}
+</script>
+
+
+<div id="app-4">
+  <ol>
+<!--   선언한 todos를 todo에 넣는다 -->
+    <li v-for="todo in todos"> 	 
+<!--         선언한 text를 표출 한다 -->
+      {{ todo.text }} 			     
+    </li>
+    <li v-for="temp in temps"> 
+      {{ temp.tmp }}
+      {{ temp.tmp1 }}   		  
+    </li>
+  </ol>
+</div>
+<script type="text/javascript">
+var app4 = new Vue({
+	  el: '#app-4',
+	  data: {
+	    todos: [
+	      { text: 'Learn JavaScript1' },
+	      { text: 'Learn JavaScript2' },
+	      { text: 'Learn JavaScript3' }
+	    ],
+	    temps: [
+		      { tmp: 'Learn Vue1' },
+		      { tmp: 'Learn Vue2' },
+		      { tmp1: 'Build something awesome1' },
+		      { tmp1: 'Build something awesome2' }
+		    ]
+	  }
+})
+
+
+	app4.todos.push({ text: 'New item1' }); //추가 방법
+	app4.todos.push({ text: 'New item2' }); 
+	
+</script>
+
+
+<div id="app-4-1">
+  <ol>
+    <li v-for="tmp in tests">  		    
+	  {{ tmp.text }}				 
+    </li>
+  </ol>
+</div>
+<script type="text/javascript">
+var app4_1 = new Vue({
+	  el: '#app-4-1',
+	  data: { //이거 선언 해줘야 들어간다.
+	    tests: []
+	  }
+})
+app4_1.tests.push({ text: 'test item1' }); 
+
+</script>
+</body>
+</html>    
