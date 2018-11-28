@@ -2,8 +2,21 @@
 <html>
 <head>
 <meta charset="utf-8" /> 
+<!-- https://developer.mozilla.org/ko/docs/Mozilla/Mobile/Viewport_meta_tag -->
 <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+
+<!-- 폰번호가 링크가 걸려(밑줄) 스타일이 안먹게 되는 것을 막음 -->
 <meta name="format-detection" content="telephone=no"/>
+
+<!-- "origin-when-cross-origin"정책은 
+특정 요청 클라이언트로부터 동일한 출처 요청을 할 때 
+참조 정보로 보내지는 전체 URL을 참조하고, 
+출처의 ASCII 직렬화 만 수행하도록 지정합니다
+ 요청 클라이언트는 특정 클라이언트로부터 원산지 요청을 할 때 
+ 참조 자 정보로 전송됩니다. 
+ https://www.w3.org/TR/referrer-policy/#referrer-policy-origin-when-cross-origin -->
+<meta name="referrer" content="origin-when-crossorigin" id="meta_referrer">
+
 <title>마이앱</title>
 <link rel="stylesheet" href="./resources/css/default.css" type="text/css" />
 
