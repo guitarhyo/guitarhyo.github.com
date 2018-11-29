@@ -1,27 +1,54 @@
 @charset "utf-8";
+@font-face {
+  font-family: 'BM-Pro';
+  src: url('../font/BMHANNAPro.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
-.header {
-    display: -webkit-box;
-    height: 50px;
-    width: 100%;
-    overflow: hidden;
-    -webkit-box-orient: horizontal;
-    background: #15b05df0;
-    background-size: 57px 50px;
-    border-radius:5px;
-    margin-bottom: 2px;
+html, body{width:100%;height:100%;}
+body{   
+	/* webkit 구글,사파리|moz 파이어폭스 */
+	/* 텍스트나 이미지를 선택할 수 있게 하는 여부를 제어 */
+	-webkit-user-select:none;-moz-user-select:none;user-select:none;
+	/* 텍스트의 자동 조절 제어 */
+	-webkit-text-size-adjust: none;-moz-text-size-adjust: none;text-size-adjust: none;
+    /* 화면을 길게 누르고 있을때 뜨는 팝업이나 액션시트를 제어 */
+    -webkit-touch-callout:none;-moz-touch-callout:none;touch-callout:none;
+    /* 링크를 터치했을때 나오는 기본 영역의 색상을 제어 */
+    -webkit-tap-highlight-color:rgba(0, 0, 0, 0);-moz-tap-highlight-color:rgba(0, 0, 0, 0);tap-highlight-color:rgba(0, 0, 0, 0);
+    }
+/* 기본 디폴트 여백 때문에 적용 */
+html,body,p, input, select, form, label, mark, ul, ul li, ol, ol li, dl, dl dt, dl dd, img, a, table, h1, h2, h3, h4, h5{margin:0;padding:0;}
+
+/* img 태그에 a 태그가 입혀질 경우 img 주변에 border가 생겨서 적용 */
+img{ border:0; }
+
+/* 항목모양 제어 */
+ul, ol{ list-style:none; } 
+
+div, td, input, textarea, button {
+	/* 맨앞 부터 없을 경우 다음 폰트로 사용- 보통 영문폰트, 일본어 폰트, 한글 폰트 순서로 사용 */
+/*  Roboto, Helvetica, 'BM-Pro', sans-serif; */
+    font-family: Roboto, 'BM-Pro', sans-serif;
 }
-.header .logo {
-    font-size: 20px;
-    color: #fff;
-    -webkit-box-align: center;
-    -webkit-box-pack: center;
-    display: -webkit-box;
-    width: 100%;
-    height: 50px;
-    overflow: hidden;
-    -webkit-box-flex: 1;
+
+/*     외각선 스타일 */
+a,button{outline-style:none;}
+
+#root-container {
+    position: relative;
+    /*     text-align: left; */
+/*     direction: ltr;   */
 }
-.btn{border-radius:5px;width:100%;height:50px;overflow:hidden;display:-webkit-box;margin-bottom: 2px;}
-.btn a{width:100%;height:50px;overflow:hidden;display:-webkit-box;-webkit-box-flex:1;font-size:15px;color:#feffff;text-decoration:none;}
-.btn a.gray{background:#696c71;-webkit-box-align:center;-webkit-box-pack:center;}
+
+#header-container {
+    background: #3b5998;
+    box-sizing: border-box;
+    height: 44px;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    z-index: 12;
+}
