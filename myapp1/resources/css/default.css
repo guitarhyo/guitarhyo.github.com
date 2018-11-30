@@ -36,14 +36,18 @@ div, td, input, textarea, button {
 /*     외각선 스타일 */
 a,button{outline-style:none;}
 
-#root-container {
+#main-container {
     position: relative;
-    /*     text-align: left; */
-/*     direction: ltr;   */
+    text-align: left;
+    direction: ltr;  
 }
 
 #header-container {
-    background: #3b5998;
+   
+}
+
+#main-nav{
+	 background: #e51937;
     box-sizing: border-box;
     height: 44px;
     margin: 0 auto;
@@ -51,4 +55,52 @@ a,button{outline-style:none;}
     position: relative;
     width: 100%;
     z-index: 12;
+    
+	    align-items: center;
+	    display: flex;
+}
+
+.flex1{
+	flex: 1;
+    min-width: 0;
+    width: 0;
+}
+
+.flex1-a{
+	display: block;
+}
+
+#flex1-img-menu{
+	background-image: url(../img/menu_20.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 20px;
+    	align-items: center;
+    display: flex;
+    margin: 0 auto;
+    position: relative;
+}
+
+#flex1-img-edit{
+	background-image: url(../img/edit_20.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 20px;
+    	align-items: center;
+    display: flex;
+    margin: 0 auto;
+    position: relative;
+}
+
+
+#search-box{
+	align-items: center;
+    display: flex;
+	background: #fff;
+    border-bottom: 1px solid #dadde1;
+    display: none;
+    margin-top: 1px;
+    padding: 8px;
+    position: relative;
+    z-index: 1;
 }
