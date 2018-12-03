@@ -6,6 +6,13 @@
     font-style: normal;
 }
 
+@font-face {
+  font-family: 'nanum';
+  src: url('../font/nanumbarungothiclight.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body{width:100%;height:100%;}
 body{   
 	/* webkit 구글,사파리|moz 파이어폭스 */
@@ -17,21 +24,23 @@ body{
     -webkit-touch-callout:none;-moz-touch-callout:none;touch-callout:none;
     /* 링크를 터치했을때 나오는 기본 영역의 색상을 제어 */
     -webkit-tap-highlight-color:rgba(0, 0, 0, 0);-moz-tap-highlight-color:rgba(0, 0, 0, 0);tap-highlight-color:rgba(0, 0, 0, 0);
-    }
+		    
+	background: #dadde1;
+}
 /* 기본 디폴트 여백 때문에 적용 */
 html,body,p, input, select, form, label, mark, ul, ul li, ol, ol li, dl, dl dt, dl dd, img, a, table, h1, h2, h3, h4, h5{margin:0;padding:0;}
+
+*{
+	/* 맨앞 부터 없을 경우 다음 폰트로 사용- 보통 영문폰트, 일본어 폰트, 한글 폰트 순서로 사용 */
+	/*  Roboto, Helvetica, 'BM-Pro', sans-serif; */
+	font-family: Roboto, 'nanum', sans-serif;   
+}
 
 /* img 태그에 a 태그가 입혀질 경우 img 주변에 border가 생겨서 적용 */
 img{ border:0; }
 
 /* 항목모양 제어 */
 ul, ol{ list-style:none; } 
-
-div, td, input, textarea, button {
-	/* 맨앞 부터 없을 경우 다음 폰트로 사용- 보통 영문폰트, 일본어 폰트, 한글 폰트 순서로 사용 */
-/*  Roboto, Helvetica, 'BM-Pro', sans-serif; */
-    font-family: Roboto, 'BM-Pro', sans-serif;
-}
 
 /*     외각선 스타일 */
 a,button{outline-style:none;}
@@ -47,7 +56,7 @@ a,button{outline-style:none;}
 }
 
 #main-nav{
-	 background: #e51937;
+	background: #e51937;
     box-sizing: border-box;
     height: 44px;
     margin: 0 auto;
@@ -55,9 +64,8 @@ a,button{outline-style:none;}
     position: relative;
     width: 100%;
     z-index: 12;
-    
-	    align-items: center;
-	    display: flex;
+	align-items: center;
+	display: flex;
 }
 
 .flex1{
@@ -93,14 +101,152 @@ a,button{outline-style:none;}
 }
 
 
-#search-box{
+#search-form{
 	align-items: center;
     display: flex;
 	background: #fff;
     border-bottom: 1px solid #dadde1;
-    display: none;
     margin-top: 1px;
     padding: 8px;
     position: relative;
     z-index: 1;
+}
+
+#search-div{
+	flex: 1 1 auto;
+    position: relative;
+}
+
+#search-input{
+	-webkit-appearance: none;
+    background: #e9ebee;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #4b4f56;
+    display: block;
+    height: 32px;
+    outline: none;
+    padding: 0 28px 0 8px;
+    width: 100%;
+}
+
+#search-btn{
+	color: #576b95;
+    cursor: pointer;
+    text-decoration: none;
+	margin: 0 4px 0 12px;
+}
+
+#sub-container{
+	position: relative;
+    z-index: 0;
+}
+
+.sub-container-section{
+	background: #dadde1;
+	list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.sub-container-article{
+	margin: 0 0 8px;
+	position: relative;
+	word-wrap: break-word;
+	background: #fff;
+}
+.container-body-div{
+	
+}
+.body-header{
+	display: flex;
+	font-size: 13px;
+    line-height: 17px;
+    margin: 0 0 12px;
+    padding: 10px 10px 0;
+}
+.body-header-icon-div1{
+	align-items: flex-start;
+	display: flex;
+	padding-right: 8px;
+}
+.body-header-icon-div2{
+	border: 1px solid transparent;
+    margin: -1px;
+}
+.body-header-icon-div3{
+	position: relative;
+}
+
+.body-header-icon-a{
+	color: #576b95;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.body-header-icon-i{
+	background: #d8dce6 url(../img/menu.png) no-repeat center;
+    background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 0;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.body-header-title-div1{
+	flex: 1;
+    min-width: 0;
+    width: 0;
+    align-items: center;
+    display: flex;
+}
+
+.body-header-title-div2{
+	align-items: flex-start;
+	flex: 1;
+    min-width: 0;
+    width: 0;
+}
+
+.body-header-title{
+	padding: 0;
+	font-size: 14px;
+    line-height: 17px;
+    font-weight: bold;
+    color: #1d2129;
+}
+
+.body-header-title-time{
+	color: #90949c;
+    margin-top: -0.3333em;
+    position: relative;
+    top: .3333em;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.body-header-submenu{
+	padding-left: 8px;
+	position: relative;
+}
+.body-header-submenu-a{
+	color: #8190b0;
+	display: inline-block;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    cursor: pointer;
+    text-decoration: none;
+    height: 100%;
+    padding: 10px;
+    width: 100%;
+}
+.body-header-submenu-i{
+	width: 24px;
+    height: 24px;
+    background-image: url(../img/submenu.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    border: 0;
 }
