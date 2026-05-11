@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2048</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #faf8ef;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+      user-select: none;
+    }
+
+    nav { width: 100%; max-width: 480px; margin-bottom: 0.5rem; }
+    nav a { color: #776e65; text-decoration: none; font-size: 0.85rem; }
+    nav a:hover { text-decoration: underline; }
+
+    .top {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 { font-size: 3.5rem; font-weight: 800; color: #776e65; line-height: 1; }
+
+    .scores { display: flex; gap: 0.5rem; }
+
+    .score-box {
+      background: #bbada0;
+      color: white;
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      text-align: center;
+      min-width: 72px;
+    }
+    .score-box .label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .score-box .value { font-size: 1.25rem; font-weight: 700; }
+
+    .actions {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .hint { font-size: 0.82rem; color: #9f8b77; }
+
+    button {
+      background: #8f7a66;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.45rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button:hover { background: #a39080; }
+
+    .board-wrap { position: relative; width: 100%; max-width: 480px; }
+
+    .board {
+      background: #bbada0;
+      border-radius: 10px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      /* 브라우저 기본 터치 스크롤을 막고 JS에서 스와이프를 직접 처리 */
+      touch-action: none;
+    }
+
+    .cell {
+      background: rgba(238, 228, 218, 0.35);
+      border-radius: 6px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tile {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      line-height: 1;
+      animation: pop 0.12s ease;
+    }
+
+    /* 타일 등장·합체 시 통통 튀는 느낌 */
+    @keyframes pop {
+      0%   { transform: scale(0.7); }
+      60%  { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* 숫자별 색상 — 원작 2048 팔레트 그대로 사용 */
+    .tile[data-v="2"]    { background: #eee4da; color: #776e65; font-size: clamp(1rem, 5vw, 2.2rem); }
+    .tile[data-v="4"]    { background: #ede0c8; color: #776e65; font-size: clamp(1rem, 5vw, 2.2rem); }
+    .tile[data-v="8"]    { background: #f2b179; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+    .tile[data-v="16"]   { background: #f59563; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+    .tile[data-v="32"]   { background: #f67c5f; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+    .tile[data-v="64"]   { background: #f65e3b; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+    .tile[data-v="128"]  { background: #edcf72; color: #f9f6f2; font-size: clamp(0.9rem, 4.5vw, 1.9rem); }
+    .tile[data-v="256"]  { background: #edcc61; color: #f9f6f2; font-size: clamp(0.9rem, 4.5vw, 1.9rem); }
+    .tile[data-v="512"]  { background: #edc850; color: #f9f6f2; font-size: clamp(0.9rem, 4.5vw, 1.9rem); }
+    .tile[data-v="1024"] { background: #edc53f; color: #f9f6f2; font-size: clamp(0.8rem, 4vw, 1.6rem); }
+    .tile[data-v="2048"] { background: #edc22e; color: #f9f6f2; font-size: clamp(0.8rem, 4vw, 1.6rem); }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(238, 228, 218, 0.78);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      backdrop-filter: blur(2px);
+    }
+    .overlay.show { display: flex; }
+    .overlay h2 { font-size: 2rem; font-weight: 800; color: #776e65; }
+  </style>
+</head>
+<body>
+
+  <nav><a href="../../index.html">← 목록으로</a></nav>
+
+  <div class="top">
+    <h1>2048</h1>
+    <div class="scores">
+      <div class="score-box">
+        <div class="label">점수</div>
+        <div class="value" id="score">0</div>
+      </div>
+      <div class="score-box">
+        <div class="label">최고</div>
+        <div class="value" id="best">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <span class="hint">방향키 또는 스와이프로 조작</span>
+    <button id="btn-new">새 게임</button>
+  </div>
+
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+    <div class="overlay" id="overlay">
+      <h2 id="overlay-msg"></h2>
+      <button id="btn-overlay">다시 시작</button>
+    </div>
+  </div>
+
+  <script>
+    const SIZE = 4;
+    let grid, score, best, over, cleared;
+
+    // ── 초기화 ──────────────────────────────────────────────
+    function newGame() {
+      grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
+      score = 0;
+      over = false;
+      cleared = false;
+      best = parseInt(localStorage.getItem('2048-best') || '0');
+      spawnTile();
+      spawnTile();
+      hideOverlay();
+      render();
+    }
+
+    function spawnTile() {
+      const empty = [];
+      for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+          if (grid[r][c] === 0) empty.push([r, c]);
+      if (!empty.length) return;
+      const [r, c] = empty[Math.floor(Math.random() * empty.length)];
+      grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+    }
+
+    // ── 이동 로직 ────────────────────────────────────────────
+    // 핵심 아이디어: "왼쪽 슬라이드" 하나만 구현하고,
+    // 나머지 방향은 행렬 변환(뒤집기·전치)으로 재활용한다.
+
+    function slideLeft(row) {
+      // 0을 제거해 압축한 뒤, 인접한 같은 숫자를 합친다.
+      // splice로 합친 타일을 제거하면 배열이 줄어들어
+      // 루프가 자동으로 같은 타일을 두 번 합치는 것을 막는다.
+      const nums = row.filter(x => x !== 0);
+      for (let i = 0; i < nums.length - 1; i++) {
+        if (nums[i] === nums[i + 1]) {
+          nums[i] *= 2;
+          score += nums[i];
+          nums.splice(i + 1, 1);
+        }
+      }
+      while (nums.length < SIZE) nums.push(0);
+      return nums;
+    }
+
+    // 행렬 전치: 행과 열을 바꾼다 (up/down 이동에 재활용)
+    function transpose(g) {
+      return g[0].map((_, col) => g.map(row => row[col]));
+    }
+
+    function move(dir) {
+      if (over) return;
+      const snapshot = JSON.stringify(grid);
+
+      if (dir === 'left') {
+        grid = grid.map(row => slideLeft(row));
+      } else if (dir === 'right') {
+        grid = grid.map(row => slideLeft([...row].reverse()).reverse());
+      } else if (dir === 'up') {
+        // 전치 → 왼쪽 슬라이드 → 전치 복원
+        grid = transpose(transpose(grid).map(row => slideLeft(row)));
+      } else if (dir === 'down') {
+        // 전치 → 오른쪽 슬라이드 → 전치 복원
+        grid = transpose(transpose(grid).map(row => slideLeft([...row].reverse()).reverse()));
+      }
+
+      if (JSON.stringify(grid) !== snapshot) {
+        spawnTile();
+        saveBest();
+        render();
+        checkEnd();
+      }
+    }
+
+    // ── 종료 판정 ────────────────────────────────────────────
+    function canMove() {
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          if (grid[r][c] === 0) return true;
+          if (c < SIZE - 1 && grid[r][c] === grid[r][c + 1]) return true;
+          if (r < SIZE - 1 && grid[r][c] === grid[r + 1][c]) return true;
+        }
+      }
+      return false;
+    }
+
+    function checkEnd() {
+      if (!cleared && grid.flat().includes(2048)) {
+        cleared = true;
+        showOverlay('🎉 2048 달성!', true);
+      } else if (!canMove()) {
+        over = true;
+        showOverlay('게임 오버', false);
+      }
+    }
+
+    // ── 렌더링 ───────────────────────────────────────────────
+    function render() {
+      document.getElementById('score').textContent = score;
+      document.getElementById('best').textContent = best;
+
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+
+          const val = grid[r][c];
+          if (val !== 0) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.dataset.v = val;
+            tile.textContent = val;
+            cell.appendChild(tile);
+          }
+
+          board.appendChild(cell);
+        }
+      }
+    }
+
+    function saveBest() {
+      if (score > best) {
+        best = score;
+        localStorage.setItem('2048-best', best);
+      }
+    }
+
+    function showOverlay(msg, isWin) {
+      document.getElementById('overlay-msg').textContent = msg;
+      const btn = document.getElementById('btn-overlay');
+      // 클리어 시에는 계속 플레이 가능, 게임오버 시에는 리셋
+      btn.textContent = isWin ? '계속하기' : '다시 시작';
+      btn.dataset.action = isWin ? 'continue' : 'restart';
+      document.getElementById('overlay').classList.add('show');
+    }
+
+    function hideOverlay() {
+      document.getElementById('overlay').classList.remove('show');
+    }
+
+    // ── 입력 처리 ────────────────────────────────────────────
+    const KEY_MAP = {
+      ArrowLeft: 'left', ArrowRight: 'right',
+      ArrowUp: 'up', ArrowDown: 'down',
+    };
+
+    document.addEventListener('keydown', e => {
+      const dir = KEY_MAP[e.key];
+      if (dir) {
+        e.preventDefault(); // 방향키로 페이지가 스크롤되는 것을 막기
+        move(dir);
+      }
+    });
+
+    // 터치 스와이프: 시작점과 끝점의 delta로 방향을 판단
+    let touchStart = null;
+    document.getElementById('board').addEventListener('touchstart', e => {
+      touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    });
+    document.getElementById('board').addEventListener('touchend', e => {
+      if (!touchStart) return;
+      const dx = e.changedTouches[0].clientX - touchStart.x;
+      const dy = e.changedTouches[0].clientY - touchStart.y;
+      touchStart = null;
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return; // 너무 짧은 스와이프 무시
+      Math.abs(dx) > Math.abs(dy) ? move(dx > 0 ? 'right' : 'left') : move(dy > 0 ? 'down' : 'up');
+    });
+
+    document.getElementById('btn-new').addEventListener('click', newGame);
+    document.getElementById('btn-overlay').addEventListener('click', () => {
+      document.getElementById('btn-overlay').dataset.action === 'continue' ? hideOverlay() : newGame();
+    });
+
+    newGame();
+  </script>
+
+</body>
+</html>
