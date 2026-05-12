@@ -4,120 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mini Games</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0f0f0f;
-      color: #eee;
-      min-height: 100vh;
-    }
-
-    header {
-      padding: 2rem 1.5rem 1rem;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    header p {
-      margin-top: 0.5rem;
-      color: #888;
-      font-size: 0.95rem;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .game-card {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-decoration: none;
-      color: inherit;
-      transition: border-color 0.2s, transform 0.15s;
-      display: block;
-    }
-
-    .game-card:hover {
-      border-color: #555;
-      transform: translateY(-3px);
-    }
-
-    .game-card .icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .game-card h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-    }
-
-    .game-card p {
-      font-size: 0.85rem;
-      color: #888;
-      line-height: 1.5;
-    }
-
-    .game-card .badge {
-      display: inline-block;
-      margin-top: 0.75rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      background: #2a2a2a;
-      color: #aaa;
-    }
-
-    /* 게임이 없을 때 */
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 3rem;
-      color: #555;
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
   <header>
-    <h1>🎮 Mini Games</h1>
-    <p>학습 목적으로 만드는 미니 게임 모음</p>
+    <button id="lang-btn" class="lang-btn">EN</button>
+    <h1>🎮 <span data-i18n="site_title">Mini Games</span></h1>
+    <p data-i18n="site_desc">학습 목적으로 만드는 미니 게임 모음</p>
   </header>
 
   <main>
     <div class="game-grid">
-      <!-- 게임 카드 예시 (게임 추가 시 이 블록을 복사해서 사용)
-      <a href="./games/game-name/" class="game-card">
-        <div class="icon">🕹️</div>
-        <h2>게임 이름</h2>
-        <p>게임 설명</p>
-        <span class="badge">Vanilla JS</span>
-      </a>
-      -->
       <a href="./games/2048/" class="game-card">
         <div class="icon">🔢</div>
         <h2>2048</h2>
-        <p>타일을 합쳐 2048을 만들어보세요</p>
+        <p data-i18n="game_2048_desc">타일을 합쳐 2048을 만들어보세요</p>
         <span class="badge">Vanilla JS</span>
       </a>
     </div>
   </main>
+
+  <script src="./js/main.js"></script>
 </body>
 </html>

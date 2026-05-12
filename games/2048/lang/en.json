@@ -1,0 +1,11 @@
+{
+  "score_label": "Score",
+  "best_label": "Best",
+  "hint": "Arrow keys or swipe to move",
+  "btn_new": "New Game",
+  "back": "← Back to list",
+  "win_msg": "🎉 You reached 2048!",
+  "gameover_msg": "Game Over",
+  "btn_continue": "Keep playing",
+  "btn_restart": "Try again"
+}

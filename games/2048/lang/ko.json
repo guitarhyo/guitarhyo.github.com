@@ -1,0 +1,11 @@
+{
+  "score_label": "점수",
+  "best_label": "최고",
+  "hint": "방향키 또는 스와이프로 조작",
+  "btn_new": "새 게임",
+  "back": "← 목록으로",
+  "win_msg": "🎉 2048 달성!",
+  "gameover_msg": "게임 오버",
+  "btn_continue": "계속하기",
+  "btn_restart": "다시 시작"
+}

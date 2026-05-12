@@ -1,0 +1,183 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-bg: #0f1115;
+  --color-surface: #1a1d24;
+  --color-text: #e8e8ea;
+  --color-accent: #4f8cff;
+  --font-sans: system-ui, -apple-system, "Noto Sans KR", sans-serif;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #faf8ef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem 1rem;
+  user-select: none;
+}
+
+nav {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  color: #776e65;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+nav a:hover { text-decoration: underline; }
+
+.lang-btn {
+  background: rgba(119, 110, 101, 0.15);
+  color: #776e65;
+  border: 1px solid rgba(119, 110, 101, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lang-btn:hover { background: rgba(119, 110, 101, 0.25); }
+
+.top {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+h1 { font-size: 3.5rem; font-weight: 800; color: #776e65; line-height: 1; }
+
+.scores { display: flex; gap: 0.5rem; }
+
+.score-box {
+  background: #bbada0;
+  color: white;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  text-align: center;
+  min-width: 72px;
+}
+
+.score-box .label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.score-box .value { font-size: 1.25rem; font-weight: 700; }
+
+.actions {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.hint { font-size: 0.82rem; color: #9f8b77; }
+
+button {
+  background: #8f7a66;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+button:hover { background: #a39080; }
+
+.board-wrap { position: relative; width: 100%; max-width: 480px; }
+
+.board {
+  background: #bbada0;
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  /* 브라우저 기본 터치 스크롤을 막고 JS에서 스와이프를 직접 처리 */
+  touch-action: none;
+}
+
+.cell {
+  background: rgba(238, 228, 218, 0.35);
+  border-radius: 6px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  line-height: 1;
+  animation: pop 0.12s ease;
+}
+
+/* 타일 등장·합체 시 통통 튀는 느낌 */
+@keyframes pop {
+  0%   { transform: scale(0.7); }
+  60%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* 숫자별 색상 — 원작 2048 팔레트 그대로 사용 */
+.tile[data-v="2"]    { background: #eee4da; color: #776e65; font-size: clamp(1rem, 5vw, 2.2rem); }
+.tile[data-v="4"]    { background: #ede0c8; color: #776e65; font-size: clamp(1rem, 5vw, 2.2rem); }
+.tile[data-v="8"]    { background: #f2b179; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+.tile[data-v="16"]   { background: #f59563; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+.tile[data-v="32"]   { background: #f67c5f; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+.tile[data-v="64"]   { background: #f65e3b; color: #f9f6f2; font-size: clamp(1rem, 5vw, 2.2rem); }
+.tile[data-v="128"]  { background: #edcf72; color: #f9f6f2; font-size: clamp(0.9rem, 4.5vw, 1.9rem); }
+.tile[data-v="256"]  { background: #edcc61; color: #f9f6f2; font-size: clamp(0.9rem, 4.5vw, 1.9rem); }
+.tile[data-v="512"]  { background: #edc850; color: #f9f6f2; font-size: clamp(0.9rem, 4.5vw, 1.9rem); }
+.tile[data-v="1024"] { background: #edc53f; color: #f9f6f2; font-size: clamp(0.8rem, 4vw, 1.6rem); }
+.tile[data-v="2048"] { background: #edc22e; color: #f9f6f2; font-size: clamp(0.8rem, 4vw, 1.6rem); }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(238, 228, 218, 0.78);
+  border-radius: 10px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  backdrop-filter: blur(2px);
+}
+
+.overlay.show { display: flex; }
+.overlay h2 { font-size: 2rem; font-weight: 800; color: #776e65; }
