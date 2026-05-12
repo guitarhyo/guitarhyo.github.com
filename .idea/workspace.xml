@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="46853003-79b2-4445-89ca-de787556c088" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/games/2048/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/games/2048/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="46853003-79b2-4445-89ca-de787556c088" name="Changes" comment="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,21 +31,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/gitlab/guitarhyo.github.com&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/gitlab/guitarhyo.github.com",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="guitarhyo.github.com" />
@@ -75,11 +71,24 @@
       <workItem from="1778488323502" duration="255000" />
       <workItem from="1778488586361" duration="1066000" />
       <workItem from="1778489676883" duration="282000" />
-      <workItem from="1778569796936" duration="3071000" />
+      <workItem from="1778569796936" duration="3873000" />
     </task>
+    <task id="LOCAL-00001" summary="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의">
+      <option name="closed" value="true" />
+      <created>1778573273317</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1778573273317</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의" />
+    <option name="LAST_COMMIT_MESSAGE" value="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의" />
   </component>
 </project>

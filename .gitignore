@@ -1,0 +1,24 @@
+# IDE
+/.idea/
+/.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node (Vite 기반 게임 개발 시)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Vite 캐시 (games/*-src/ 개발 폴더)
+games/*-src/.vite/
+games/*-src/node_modules/
+
+# 환경변수
+.env
+.env.local
+.env.*.local
