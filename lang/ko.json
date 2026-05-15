@@ -1,5 +1,7 @@
 {
   "site_title": "Mini Games",
   "site_desc": "학습 목적으로 만드는 미니 게임 모음",
-  "game_2048_desc": "타일을 합쳐 2048을 만들어보세요"
+  "game_2048_desc": "타일을 합쳐 2048을 만들어보세요",
+  "game_tower_title": "구름탑 검사단",
+  "game_tower_desc": "탑을 오르며 적을 처치하세요"
 }
