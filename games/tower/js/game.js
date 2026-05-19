@@ -11,8 +11,7 @@ const PLAT_W_MIN = 65;
 const PLAT_W_MAX = 120;
 
 // ── 적 상수 ────────────────────────────────────────────────
-const ENEMY_W                = 30;
-const ENEMY_H                = 30;
+// ENEMY_W / ENEMY_H 는 sprite.js 에서 정의
 const ENEMY_SPEED_BASE       = 55;
 const ENEMY_SPAWN_MIN_HEIGHT = 150;
 
@@ -355,7 +354,7 @@ function updateAnim(dt) {
   const interval = 1 / ANIM_FPS[newState];
   if (playerAnim.timer >= interval) {
     playerAnim.timer -= interval;
-    playerAnim.frame = (playerAnim.frame + 1) % FRAME_COUNT[newState];
+    playerAnim.frame = (playerAnim.frame + 1) % FRAME_COUNT[currentChar.id][newState];
   }
 }
 
@@ -480,11 +479,10 @@ function drawGame() {
   ctx.translate(s.x, s.y);
 
   // 발판
-  ctx.fillStyle = '#3a3f50';
   for (const plat of platforms) {
     const sy = plat.y - cameraY;
     if (sy > -PLAT_H && sy < LOGICAL_H) {
-      ctx.fillRect(Math.round(plat.x), Math.round(sy), plat.w, plat.h);
+      drawPlatformTile(ctx, Math.round(plat.x), Math.round(sy), plat.w, plat.h);
     }
   }
 
@@ -708,4 +706,4 @@ function loop(timestamp) {
   requestAnimationFrame(loop);
 }
 
-loadI18n().then(() => requestAnimationFrame(loop));
+Promise.all([loadI18n(), loadSprites()]).then(() => requestAnimationFrame(loop));

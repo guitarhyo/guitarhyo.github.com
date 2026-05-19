@@ -1,196 +1,123 @@
-// ── 팔레트 ─────────────────────────────────────────────────
-// 한 글자 = 한 논리 픽셀 (scale 2 → 화면에서 2×2)
-const PAL = {
-  '_': null,       // 투명
-  'k': '#12151b',  // 외곽선
-  'a': '#8090b0',  // 실버 갑옷
-  'e': '#202020',  // 눈
-  'b': '#4f8cff',  // 파란 보석/강조
-  'w': '#e0e8ff',  // 검날 / 하이라이트
+// ── 스프라이트 이미지 로더 ────────────────────────────────
+const SPRITES = {};
+
+function _loadImage(key, src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload  = () => { SPRITES[key] = img; resolve(); };
+    img.onerror = () => { console.warn(`스프라이트 로드 실패: ${src}`); resolve(); };
+    img.src = src;
+  });
+}
+
+function loadSprites() {
+  const c = './assets/characters/';
+  const e = './assets/enemies/';
+  const t = './assets/tiles/';
+  return Promise.all([
+    // 냥이 검사
+    _loadImage('cat_idle_0',       c + 'cat_idle_0.png'),
+    _loadImage('cat_idle_1',       c + 'cat_idle_1.png'),
+    _loadImage('cat_idle_0_white', c + 'cat_idle_0_white.png'),
+    _loadImage('cat_idle_1_white', c + 'cat_idle_1_white.png'),
+    _loadImage('cat_run_0',        c + 'cat_run_0.png'),
+    _loadImage('cat_run_1',        c + 'cat_run_1.png'),
+    _loadImage('cat_jump',         c + 'cat_jump.png'),
+    _loadImage('cat_fall',         c + 'cat_fall.png'),
+    // 멍멍이 검사
+    _loadImage('dog_idle_0',       c + 'dog_idle_0.png'),
+    _loadImage('dog_idle_1',       c + 'dog_idle_1.png'),
+    _loadImage('dog_run_0',        c + 'dog_run_0.png'),
+    _loadImage('dog_run_1',        c + 'dog_run_1.png'),
+    _loadImage('dog_jump_0',       c + 'dog_jump_0.png'),
+    _loadImage('dog_jump_1',       c + 'dog_jump_1.png'),
+    _loadImage('dog_jump_2',       c + 'dog_jump_2.png'),
+    _loadImage('dog_fall',         c + 'dog_fall.png'),
+    // 슬라임 고블린
+    _loadImage('slime_0',          e + 'slime_0.png'),
+    _loadImage('slime_1',          e + 'slime_1.png'),
+    // 발판
+    _loadImage('platform',         t + 'platform.png'),
+  ]);
+}
+
+// ── 애니메이션 프레임 정의 ────────────────────────────────
+const CHAR_FRAMES = {
+  cat: {
+    idle: ['cat_idle_0', 'cat_idle_1'],
+    run:  ['cat_run_0',  'cat_run_1'],
+    jump: ['cat_jump'],
+    fall: ['cat_fall'],
+  },
+  dog: {
+    idle: ['dog_idle_0', 'dog_idle_1'],
+    run:  ['dog_run_0',  'dog_run_1'],
+    jump: ['dog_jump_0', 'dog_jump_1', 'dog_jump_2'],
+    fall: ['dog_fall'],
+  },
 };
 
-// ── 프레임 데이터 (12×12 논리 픽셀) ────────────────────────
-// 캐릭터 기본형: 냥이 검사 (오른쪽을 향함 기준)
-// 검은 col 0 의 'w' → 왼손에서 왼쪽으로 뻗음
-
-const _BASE_ROWS = [
-  '__kk___kk___',  //  0: 귀 끝
-  '_kak___kak__',  //  1: 귀 내부
-  '_kaaaaaaak__',  //  2: 머리 상단
-  '_kaaaaaaak__',  //  3: 얼굴 위
-  '_kaeaaaeak__',  //  4: 눈
-  '_kaaaaaaak__',  //  5: 얼굴 아래
-  '__kaaaak____',  //  6: 턱 (좁아짐)
-  '_kbbbbbbbk__',  //  7: 갑옷 상단
-  'wkbbbbbbbk__',  //  8: 검 팔 + 갑옷 중단
-  '_kbbbbbbbk__',  //  9: 갑옷 하단
-  '__kak__kak__',  // 10: 다리
-  '__kkk__kkk__',  // 11: 발
-];
-
-const FRAMES = {
-  // idle: 데이터는 동일, draw 시 yOffset 으로 bob 처리
-  idle: [
-    _BASE_ROWS,
-    _BASE_ROWS,
-  ],
-
-  // run: 다리 교차 애니메이션
-  run: [
-    [
-      ..._BASE_ROWS.slice(0, 10),
-      '_kak___kkk__',  // 10: 왼 다리 앞 (a=빛), 오른 다리 뒤 (k=그림자)
-      '_kkk___kkk__',  // 11
-    ],
-    [
-      ..._BASE_ROWS.slice(0, 10),
-      '_kkk___kak__',  // 10: 왼 뒤, 오른 앞
-      '_kkk___kkk__',  // 11
-    ],
-  ],
-
-  // jump: 발 숨김 (공중 느낌)
-  jump: [
-    [
-      ..._BASE_ROWS.slice(0, 8),
-      'wkbbbbbbbkw_',  // 8: 양 팔 벌림
-      ..._BASE_ROWS.slice(9, 10),
-      '__kak__kak__',  // 10: 다리
-      '____________',  // 11: 발 숨김
-    ],
-  ],
-
-  // fall: 팔 벌림 + 다리 늘어짐
-  fall: [
-    [
-      ..._BASE_ROWS.slice(0, 8),
-      'wkbbbbbbbkw_',  // 8: 양 팔 벌림
-      ..._BASE_ROWS.slice(9),
-    ],
-  ],
-};
-
-// 상태별 프레임 수
+// game.js 에서 프레임 카운터 순환에 사용 (캐릭터별)
 const FRAME_COUNT = {
-  idle: 2,
-  run:  2,
-  jump: 1,
-  fall: 1,
+  cat: { idle: 2, run: 2, jump: 1, fall: 1 },
+  dog: { idle: 2, run: 2, jump: 3, fall: 1 },
 };
 
-// 상태×프레임별 Y 오프셋 (bob / 점프 연출)
+// 상태×프레임별 Y 오프셋 (픽셀, scale=3 기준)
 const Y_OFFSETS = {
-  idle: [0, 1],   // 1px bob
-  run:  [0, 1],   // 달리기 바운스
-  jump: [-2],     // 위로 당김
-  fall: [1],      // 아래로 늘어짐
+  idle: [0,  3],
+  run:  [0,  3],
+  jump: [-6],
+  fall: [ 3],
 };
 
-// ── 픽셀 아트 렌더러 ───────────────────────────────────────
-// palette 를 인자로 받아 캐릭터·적 등 여러 스프라이트에 재사용
-function drawPixelArt(ctx, rows, palette, x, y, scale, flipX) {
-  const width = rows[0].length;
-  for (let row = 0; row < rows.length; row++) {
-    const line = rows[row];
-    for (let col = 0; col < line.length; col++) {
-      const color = palette[line[col]];
-      if (!color) continue;
-      ctx.fillStyle = color;
-      const px = flipX
-        ? x + (width - 1 - col) * scale
-        : x + col * scale;
-      ctx.fillRect(px, y + row * scale, scale, scale);
-    }
+// ── 크기 상수 (game.js 공용) ──────────────────────────────
+const CHAR_W  = 36;
+const CHAR_H  = 36;
+const ENEMY_W = 30;
+const ENEMY_H = 30;
+
+// ── 이미지 드로잉 헬퍼 ────────────────────────────────────
+function _drawSprite(ctx, img, x, y, w, h, flipX) {
+  if (!img) return;
+  if (flipX) {
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, -(x + w), y, w, h);
+    ctx.restore();
+  } else {
+    ctx.drawImage(img, x, y, w, h);
   }
 }
 
-// ── 적 스프라이트 (10×10 → scale 3 = 30×30) ──────────────
-const ENEMY_PAL = {
-  '_': null,
-  'k': '#12151b',  // 외곽선
-  'g': '#50a830',  // 녹색 몸
-  'e': '#f0f040',  // 노란 눈
-  'r': '#c04040',  // 붉은 발
-};
-
-// 10×10 슬라임 고블린
-const ENEMY_BASE = [
-  '__kkkk____',  //  0
-  '_kggggk___',  //  1
-  '_kegegk___',  //  2: 눈
-  '_kggggk___',  //  3
-  'kkggggkk__',  //  4: 어깨
-  'kgggggggk_',  //  5
-  'kgggggggk_',  //  6
-  '_kgggggk__',  //  7
-  '__krkrk___',  //  8: 발 색상
-  '__k___k___',  //  9: 다리
-];
-
-function drawSlimeEnemy(ctx, x, y, facingR) {
-  drawPixelArt(ctx, ENEMY_BASE, ENEMY_PAL, x, y, 3, !facingR);
-}
-
-// ── 멍멍이 검사 스프라이트 (12×12 → scale 3 = 36×36) ──────
-const DOG_PAL = {
-  '_': null,
-  'k': '#12151b',  // 외곽선
-  'd': '#b07830',  // 갈색 털
-  'e': '#202020',  // 눈
-  'b': '#4f8cff',  // 갑옷 (파랑)
-  'w': '#e0e8ff',  // 검날
-};
-
-// 고양이와 동일 구조, 귀 모양·털 색만 다름
-// Row1: 2칸 귀(kddk) → 고양이보다 넓고 묵직한 느낌
-// Row7-9: 1칸 더 넓은 갑옷(bbbbbbbb = 8칸 vs 고양이 7칸)
-const DOG_BASE = [
-  '__kk___kk___',  //  0: 귀 끝
-  '_kddk__kddk_',  //  1: 넓은 처진 귀 (2칸)
-  '_kdddddddk__',  //  2: 머리 상단
-  '_kdddddddk__',  //  3: 얼굴
-  '_kdedddedk__',  //  4: 눈
-  '_kdddddddk__',  //  5: 얼굴 하단
-  '__kddddk____',  //  6: 턱
-  '_kbbbbbbbbk_',  //  7: 갑옷 (고양이보다 1칸 넓음)
-  'wkbbbbbbbbk_',  //  8: 검 팔
-  '_kbbbbbbbbk_',  //  9: 갑옷 하단
-  '__kdk__kdk__',  // 10: 다리
-  '__kkk__kkk__',  // 11: 발
-];
-
-const DOG_FRAMES = {
-  idle: [DOG_BASE, DOG_BASE],
-  run: [
-    [...DOG_BASE.slice(0, 10), '_kdk___kkk__', '_kkk___kkk__'],
-    [...DOG_BASE.slice(0, 10), '_kkk___kdk__', '_kkk___kkk__'],
-  ],
-  jump: [
-    [...DOG_BASE.slice(0, 8), 'wkbbbbbbbbkw', ...DOG_BASE.slice(9, 10),
-     '__kdk__kdk__', '____________'],
-  ],
-  fall: [
-    [...DOG_BASE.slice(0, 8), 'wkbbbbbbbbkw', ...DOG_BASE.slice(9)],
-  ],
-};
-
-function drawDogKnight(ctx, x, y, state, frame, facingR) {
-  const frames = DOG_FRAMES[state] ?? DOG_FRAMES.idle;
-  const f      = frame % frames.length;
-  const yOff   = (Y_OFFSETS[state]?.[f] ?? 0) * 3;
-  drawPixelArt(ctx, frames[f], DOG_PAL, x, y + yOff, 3, !facingR);
-}
-
-// ── 공개 API ───────────────────────────────────────────────
-// charId  : 'cat' | 'dog'
+// ── 캐릭터 드로우 ─────────────────────────────────────────
+// charId: 'cat' | 'dog'  /  state: 'idle' | 'run' | 'jump' | 'fall'
 function drawCharacter(ctx, charId, x, y, state, frame, facingR) {
-  if (charId === 'dog') drawDogKnight(ctx, x, y, state, frame, facingR);
-  else                  drawCatKnight(ctx, x, y, state, frame, facingR);
+  const frames = CHAR_FRAMES[charId]?.[state] ?? CHAR_FRAMES[charId]?.idle ?? [];
+  const f      = frame % Math.max(1, frames.length);
+  const key    = frames[f];
+  const yOff   = Y_OFFSETS[state]?.[f % (Y_OFFSETS[state]?.length ?? 1)] ?? 0;
+  _drawSprite(ctx, SPRITES[key], x, y + yOff, CHAR_W, CHAR_H, !facingR);
 }
 
-function drawCatKnight(ctx, x, y, state, frame, facingR) {
-  const stateFrames = FRAMES[state] ?? FRAMES.idle;
-  const f           = frame % stateFrames.length;
-  const yOff        = (Y_OFFSETS[state]?.[f] ?? 0) * 3; // scale=3 이므로 ×3
-  drawPixelArt(ctx, stateFrames[f], PAL, x, y + yOff, 3, !facingR);
+// ── 슬라임 고블린 드로우 ──────────────────────────────────
+function drawSlimeEnemy(ctx, x, y, facingR) {
+  // Date.now() 기반으로 200ms마다 프레임 교체 (5fps)
+  const frame = Math.floor(Date.now() / 200) % 2;
+  _drawSprite(ctx, SPRITES[`slime_${frame}`], x, y, ENEMY_W, ENEMY_H, !facingR);
+}
+
+// ── 발판 드로우 ───────────────────────────────────────────
+function drawPlatformTile(ctx, x, y, w, h) {
+  const img = SPRITES.platform;
+  if (!img) {
+    ctx.fillStyle = '#3a3f50';
+    ctx.fillRect(x, y, w, h);
+    return;
+  }
+  // 이미지 너비 단위로 수평 타일링
+  const tw = img.width || w;
+  for (let px = 0; px < w; px += tw) {
+    ctx.drawImage(img, x + px, y, Math.min(tw, w - px), h);
+  }
 }

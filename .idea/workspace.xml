@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="46853003-79b2-4445-89ca-de787556c088" name="Changes" comment="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의" />
+    <list default="true" id="46853003-79b2-4445-89ca-de787556c088" name="Changes" comment=".gitignore 파일 추가">
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_fall.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_idle_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_idle_0_white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_idle_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_idle_1_white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_jump.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_run_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/cat_run_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_fall.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_idle_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_idle_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_jump_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_jump_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_jump_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_run_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/characters/dog_run_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/enemies/slime_0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/enemies/slime_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/games/tower/assets/tiles/platform.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games/tower/js/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/games/tower/js/game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games/tower/js/sprite.js" beforeDir="false" afterPath="$PROJECT_DIR$/games/tower/js/sprite.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,11 +65,19 @@
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/gitlab/guitarhyo.github.com",
+    "last_opened_file_path": "D:/gitlab/guitarhyo.github.com/games/tower/assets/tiles",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\gitlab\guitarhyo.github.com\games\tower\assets\tiles" />
+      <recent name="D:\gitlab\guitarhyo.github.com\games\tower\assets\enemies" />
+      <recent name="D:\gitlab\guitarhyo.github.com\games\tower\assets\characters" />
+      <recent name="D:\gitlab\guitarhyo.github.com\games\tower" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="guitarhyo.github.com" />
@@ -71,7 +102,11 @@
       <workItem from="1778488323502" duration="255000" />
       <workItem from="1778488586361" duration="1066000" />
       <workItem from="1778489676883" duration="282000" />
-      <workItem from="1778569796936" duration="3873000" />
+      <workItem from="1778569796936" duration="4492000" />
+      <workItem from="1778723771741" duration="7442000" />
+      <workItem from="1778817059473" duration="11740000" />
+      <workItem from="1779082405540" duration="2755000" />
+      <workItem from="1779171389259" duration="1976000" />
     </task>
     <task id="LOCAL-00001" summary="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의">
       <option name="closed" value="true" />
@@ -81,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778573273317</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary=".gitignore 파일 추가">
+      <option name="closed" value="true" />
+      <created>1778574298132</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778574298132</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -89,6 +132,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의" />
-    <option name="LAST_COMMIT_MESSAGE" value="  구조 변경&#10;  / (허브)&#10;  ├── css/style.css         ← 인라인 CSS 분리 + 공통 디자인 토큰                                                                                                                                             &#10;  ├── js/main.js            ← 인라인 JS 분리 + i18n 로직&#10;  ├── lang/ko.json          ← 한국어 리소스                                                                                                                                                                    &#10;  ├── lang/en.json          ← 영어 리소스                                                                                                                                                                    &#10;  └── index.html            ← 구조만 남김&#10;&#10;  games/2048/&#10;  ├── css/style.css         ← 인라인 CSS 분리&#10;  ├── js/game.js            ← 인라인 JS 분리&#10;  ├── lang/ko.json          ← 한국어 리소스&#10;  ├── lang/en.json          ← 영어 리소스&#10;  ├── index.html            ← 구조 + data-i18n 속성&#10;  └── README.md             ← 학습 포인트 기록&#10;&#10;  기능 개선&#10;  - 언어 전환 토글 버튼 추가 (허브·2048 모두)&#10;  - localStorage 키 2048-best → score:2048:best (정책 네이밍)&#10;  - 터치 입력 touchstart/touchend → pointerdown/pointerup (Pointer Events 통합)&#10;  - CSS 변수로 공통 디자인 토큰 정의" />
+    <MESSAGE value=".gitignore 파일 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value=".gitignore 파일 추가" />
   </component>
 </project>
