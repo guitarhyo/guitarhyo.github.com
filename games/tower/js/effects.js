@@ -1,3 +1,83 @@
+// ── 하늘 배경 + 구름 ─────────────────────────────────────────
+// 학습 포인트: 시차(parallax) — 배경이 게임 세계보다 느리게 스크롤되면 원근감이 생김
+const _bgClouds = [];
+const _BG_CLOUD_N = 10;
+let   _bgCamY = 0; // 이전 프레임 cameraY (시차 델타 계산용)
+const _PARALLAX = 0.25; // 구름이 카메라의 25% 속도로 이동
+
+function _makeCloud(sy) {
+  return {
+    sx:    Math.random() * (LOGICAL_W + 80) - 40,
+    sy,
+    w:     55 + Math.random() * 90,
+    h:     20 + Math.random() * 20,
+    alpha: 0.5 + Math.random() * 0.4,
+  };
+}
+
+function initBgClouds() {
+  _bgClouds.length = 0;
+  _bgCamY = 0;
+  for (let i = 0; i < _BG_CLOUD_N; i++) {
+    _bgClouds.push(_makeCloud(Math.random() * LOGICAL_H));
+  }
+}
+
+// 카메라가 올라간 만큼만 구름을 시차 비율로 이동 (자율 드리프트 없음)
+function updateBgClouds(cameraY, dt) {
+  const camDelta = _bgCamY - cameraY;   // 올라갈수록 양수
+  _bgCamY = cameraY;
+
+  const drift = camDelta * _PARALLAX;
+
+  for (const c of _bgClouds) {
+    c.sy += drift;
+    if (c.sy >  LOGICAL_H + c.h + 10) c.sy = -(c.h + 10);
+    if (c.sy < -(c.h + 10))           c.sy =  LOGICAL_H + c.h + 10;
+  }
+}
+
+// t=0: 지상(밝은 하늘) / t=1: 고고도(짙은 남색)
+function _skyChannel(ch, t) {
+  const lo = [110, 185, 240];
+  const hi = [ 12,  18,  55];
+  return Math.round(lo[ch] + (hi[ch] - lo[ch]) * t);
+}
+
+function drawBackground(ctx, cameraY) {
+  // 고도 비율 (0 ~ 3000 px 상승 기준)
+  const t    = Math.max(0, Math.min(1, -cameraY / 3000));
+  const tTop = Math.min(1, t + 0.12); // 화면 위쪽은 조금 더 어둡게
+
+  const grad = ctx.createLinearGradient(0, 0, 0, LOGICAL_H);
+  grad.addColorStop(0, `rgb(${_skyChannel(0, tTop)},${_skyChannel(1, tTop)},${_skyChannel(2, tTop)})`);
+  grad.addColorStop(1, `rgb(${_skyChannel(0, t)},${_skyChannel(1, t)},${_skyChannel(2, t)})`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+
+  // 구름 (높을수록 점점 사라짐)
+  ctx.save();
+  for (const c of _bgClouds) {
+    ctx.globalAlpha = c.alpha * (1 - t * 0.7);
+    _drawCloud(ctx, c.sx, c.sy, c.w, c.h);
+  }
+  ctx.restore();
+}
+
+// 타원 3개 겹쳐 픽셀아트 구름 모양 구현
+function _drawCloud(ctx, x, y, w, h) {
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(x + w * 0.50, y + h * 0.65, w * 0.44, h * 0.48, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(x + w * 0.27, y + h * 0.62, w * 0.26, h * 0.44, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(x + w * 0.73, y + h * 0.62, w * 0.22, h * 0.38, 0, 0, Math.PI * 2);
+  ctx.fill();
+}
+
 // ── 파티클 ─────────────────────────────────────────────────
 // 픽셀아트 느낌: 크기를 짝수(2/4/6px)로만 사용
 const particles = [];
@@ -68,35 +148,9 @@ function updateShake(dt) {
 // drawGame에서 ctx.translate에 사용
 function getShake() { return { x: _shake.x, y: _shake.y }; }
 
-// ── 잔상 ───────────────────────────────────────────────────
-// 이동/공중 상태일 때만 표시. 파란 반투명 사각형으로 단순하게 표현
-const trail = [];
-const TRAIL_LEN = 4;
-
-function updateTrail(player) {
-  const active = !player.onGround || Math.abs(player.vx) > 80;
-  if (!active) { trail.length = 0; return; }
-
-  trail.unshift({ wx: player.x, wy: player.y });
-  if (trail.length > TRAIL_LEN) trail.pop();
-}
-
-function drawTrail(ctx, player, cameraY) {
-  if (trail.length === 0) return;
-  ctx.save();
-  for (let i = 0; i < trail.length; i++) {
-    const t = trail[i];
-    // i=0 이 가장 최근 (가장 진함) → 뒤로 갈수록 옅어짐
-    ctx.globalAlpha = 0.25 * (1 - i / trail.length);
-    ctx.fillStyle   = '#6fa8ff';
-    ctx.fillRect(Math.round(t.wx), Math.round(t.wy - cameraY), player.w, player.h);
-  }
-  ctx.restore();
-}
-
 // ── 전체 리셋 ──────────────────────────────────────────────
 function resetEffects() {
   particles.length = 0;
-  trail.length     = 0;
   _shake.power = 0; _shake.timer = 0; _shake.x = 0; _shake.y = 0;
+  _bgCamY = 0;
 }

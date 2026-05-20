@@ -1,6 +1,14 @@
 const LOGICAL_W = 360;
 const LOGICAL_H = 640;
 
+// 텍스트 가독성용 그림자 — 하늘 배경 위 어떤 색 글자도 읽힘
+function _setShadow(ctx) {
+  ctx.shadowColor   = 'rgba(0,0,0,0.85)';
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 1;
+  ctx.shadowBlur    = 4;
+}
+
 // ── 물리 상수 (공통) ───────────────────────────────────────
 const GRAVITY = 1400; // px/s²
 
@@ -413,6 +421,8 @@ function drawLangToggle(ctx) {
 let state = 'title';
 
 function update(dt) {
+  updateBgClouds(cameraY, dt);
+
   if (state !== 'playing') {
     if (input.anyTapDown) {
       // 언어 토글 버튼 탭 우선 처리
@@ -443,7 +453,7 @@ function update(dt) {
   updateCombo(dt);
   updateParticles(dt);
   updateShake(dt);
-  updateTrail(player);
+
   updateCamera();
   spawnPlatformsAbove();
   cleanupPlatforms();
@@ -470,8 +480,7 @@ function draw() {
 }
 
 function drawGame() {
-  ctx.fillStyle = '#0f1115';
-  ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+  drawBackground(ctx, cameraY);
 
   // ── 월드 (화면 흔들림 적용) ────────────────────────────
   ctx.save();
@@ -494,9 +503,6 @@ function drawGame() {
       drawSlimeEnemy(ctx, Math.round(e.x), Math.round(sy), e.vx > 0);
     }
   }
-
-  // 잔상 (플레이어 뒤)
-  drawTrail(ctx, player, cameraY);
 
   // 플레이어
   drawCharacter(
@@ -522,20 +528,17 @@ function drawGame() {
 
 function drawScoreHUD(ctx) {
   ctx.save();
+  _setShadow(ctx);
   ctx.textAlign    = 'right';
   ctx.textBaseline = 'top';
-  ctx.font         = 'bold 14px system-ui';
 
-  // 그림자
-  ctx.fillStyle = '#000000';
-  ctx.fillText(score.total, LOGICAL_W - 7, 9);
   ctx.fillStyle = '#e8e8ea';
+  ctx.font      = 'bold 14px system-ui';
   ctx.fillText(score.total, LOGICAL_W - 8, 8);
 
-  // 최고 점수 (더 작고 흐릿하게)
   if (bestScore > 0) {
+    ctx.fillStyle = '#c0d0e8';
     ctx.font      = '11px system-ui';
-    ctx.fillStyle = '#8090b0';
     ctx.fillText(`${t('best')} ${bestScore}`, LOGICAL_W - 8, 26);
   }
 
@@ -570,16 +573,9 @@ function drawComboHUD(ctx) {
 }
 
 function drawSelectScreen() {
-  ctx.fillStyle = '#0f1115';
-  ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+  drawBackground(ctx, cameraY);
 
-  // 제목
-  ctx.fillStyle = '#e8e8ea';
-  ctx.font = 'bold 20px system-ui';
-  ctx.textAlign = 'center';
-  ctx.fillText(t('select_prompt'), LOGICAL_W / 2, 60);
-
-  // 호버 하이라이트 (현재 누른 영역)
+  // 호버 하이라이트 (shadow 없이)
   ctx.save();
   ctx.globalAlpha = 0.12;
   ctx.fillStyle = '#4f8cff';
@@ -587,57 +583,62 @@ function drawSelectScreen() {
   if (input.right) ctx.fillRect(180, 0, 180, LOGICAL_H);
   ctx.restore();
 
-  // 구분선
+  // 구분선 (shadow 없이)
+  ctx.save();
   ctx.strokeStyle = '#2a2d38';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(180, 80);
   ctx.lineTo(180, LOGICAL_H - 60);
   ctx.stroke();
+  ctx.restore();
+
+  // 텍스트 (shadow 적용)
+  ctx.save();
+  _setShadow(ctx);
+  ctx.textAlign = 'center';
+
+  ctx.fillStyle = '#e8e8ea';
+  ctx.font = 'bold 20px system-ui';
+  ctx.fillText(t('select_prompt'), LOGICAL_W / 2, 60);
 
   const chars = [CHARACTERS.cat, CHARACTERS.dog];
-  const xs = [90, 270]; // 각 칸 중앙 X
+  const xs = [90, 270];
 
   chars.forEach((ch, i) => {
     const cx = xs[i];
-    const spriteX = cx - 18; // 36px 스프라이트 중앙 정렬
+    const spriteX = cx - 18;
     const spriteY = LOGICAL_H / 2 - 60;
 
-    // 스프라이트 미리보기
     drawCharacter(ctx, ch.id, spriteX, spriteY, 'idle', 0, true);
 
-    // 이름
     ctx.fillStyle = '#e8e8ea';
     ctx.font = 'bold 16px system-ui';
-    ctx.textAlign = 'center';
     ctx.fillText(ch.icon + ' ' + t(ch.id + '_name'), cx, spriteY + 60);
 
-    // 설명
-    ctx.fillStyle = '#8090b0';
+    ctx.fillStyle = '#ffffff';
     ctx.font = '12px system-ui';
     ctx.fillText(t(ch.id + '_desc'), cx, spriteY + 80);
 
-    // 스탯 요약
-    ctx.fillStyle = '#4f8cff';
+    ctx.fillStyle = '#a0cfff';
     ctx.font = '11px system-ui';
-    const spd = ch.id === 'cat' ? t('spd_fast')   : t('spd_slow');
-    const pwr = ch.id === 'cat' ? t('range_narrow') : t('range_wide');
-    ctx.fillText(spd, cx, spriteY + 100);
-    ctx.fillText(pwr, cx, spriteY + 116);
+    ctx.fillText(ch.id === 'cat' ? t('spd_fast') : t('spd_slow'), cx, spriteY + 100);
+    ctx.fillText(ch.id === 'cat' ? t('range_narrow') : t('range_wide'), cx, spriteY + 116);
   });
 
-  // 안내
-  ctx.fillStyle = '#4f8cff';
+  ctx.fillStyle = '#a0cfff';
   ctx.font = '14px system-ui';
-  ctx.textAlign = 'center';
   ctx.fillText(t('select_hint'), LOGICAL_W / 2, LOGICAL_H - 30);
+  ctx.restore();
 
   drawLangToggle(ctx);
 }
 
 function drawTitle() {
-  ctx.fillStyle = '#0f1115';
-  ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+  drawBackground(ctx, cameraY);
+
+  ctx.save();
+  _setShadow(ctx);
   ctx.textAlign = 'center';
 
   ctx.fillStyle = '#e8e8ea';
@@ -653,13 +654,16 @@ function drawTitle() {
   ctx.fillStyle = '#4f8cff';
   ctx.font = '16px system-ui';
   ctx.fillText(t('tap_to_start'), LOGICAL_W / 2, LOGICAL_H / 2 + 35);
+  ctx.restore();
 
   drawLangToggle(ctx);
 }
 
 function drawGameOver() {
-  ctx.fillStyle = '#0f1115';
-  ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+  drawBackground(ctx, cameraY);
+
+  ctx.save();
+  _setShadow(ctx);
   ctx.textAlign = 'center';
 
   ctx.fillStyle = '#e8e8ea';
@@ -688,6 +692,7 @@ function drawGameOver() {
   ctx.fillStyle = '#4f8cff';
   ctx.font = '16px system-ui';
   ctx.fillText(t('tap_to_restart'), LOGICAL_W / 2, LOGICAL_H / 2 + 80);
+  ctx.restore();
 
   drawLangToggle(ctx);
 }
@@ -706,4 +711,7 @@ function loop(timestamp) {
   requestAnimationFrame(loop);
 }
 
-Promise.all([loadI18n(), loadSprites()]).then(() => requestAnimationFrame(loop));
+Promise.all([loadI18n(), loadSprites()]).then(() => {
+  initBgClouds();
+  requestAnimationFrame(loop);
+});
