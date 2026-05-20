@@ -187,14 +187,14 @@ function makeEnemy(plat) {
   const x = plat.x + Math.random() * Math.max(0, plat.w - ENEMY_W);
   return {
     x,
-    y:      plat.y - ENEMY_H,
-    w:      ENEMY_W,
-    h:      ENEMY_H,
-    vx:     Math.random() < 0.5 ? -ENEMY_SPEED_BASE : ENEMY_SPEED_BASE,
-    // 발판 범위 안에서 순찰 (발판이 사라져도 값은 보존)
+    y:       plat.y - ENEMY_H,
+    w:       ENEMY_W,
+    h:       ENEMY_H,
+    vx:      Math.random() < 0.5 ? -ENEMY_SPEED_BASE : ENEMY_SPEED_BASE,
     patrolX: plat.x,
     patrolW: plat.w,
-    alive:  true,
+    alive:   true,
+    type:    ['slime', 'mushroom', 'flame', 'ghost'][Math.floor(Math.random() * 4)],
   };
 }
 
@@ -500,7 +500,11 @@ function drawGame() {
     if (!e.alive) continue;
     const sy = e.y - cameraY;
     if (sy > -ENEMY_H && sy < LOGICAL_H) {
-      drawSlimeEnemy(ctx, Math.round(e.x), Math.round(sy), e.vx > 0);
+      const ex = Math.round(e.x), ey = Math.round(sy), ef = e.vx > 0;
+      if      (e.type === 'mushroom') drawMushroomEnemy(ctx, ex, ey, ef);
+      else if (e.type === 'flame')    drawFlameEnemy(ctx, ex, ey, ef);
+      else if (e.type === 'ghost')    drawGhostEnemy(ctx, ex, ey, ef);
+      else                            drawSlimeEnemy(ctx, ex, ey, ef);
     }
   }
 

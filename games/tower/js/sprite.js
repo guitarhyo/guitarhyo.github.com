@@ -1,5 +1,5 @@
 // ── 스프라이트 시트 로더 ─────────────────────────────────────
-// 학습 포인트: 개별 이미지 18개 → 시트 1장으로 교체해 HTTP 요청 수 감소
+// 학습 포인트: 개별 이미지 → 시트 1장으로 교체해 HTTP 요청 수 감소
 const SHEET = { img: null };
 
 function loadSprites() {
@@ -12,62 +12,88 @@ function loadSprites() {
 }
 
 // ── 시트 내 프레임 좌표 정의 ─────────────────────────────────
-// 학습 포인트: drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh) 9인수 형태로 소스 영역을 잘라냄
-// 시트 규격: 1056×499px, PAD=16, ROW_GAP=8, CELL=128
-//   Row0 고양이 (sy=16):  col0 x16  col1 x144  col2 x272  col3 x400  col4 x528  col5 x656  col6 x784  col7 x912
-//                         idle_0    idle_1     run_0      run_1      jump_0     jump_1     jump_2     fall
-//   Row1 강아지 (sy=152): col0 x16  col1 x144  col2 x272  col3 x400  col4 x528  col5 x656  col6 x784  col7 x912
-//                         idle_0    idle_1     run_0      run_1      jump_0     jump_1     jump_2     fall
-//   Row2 슬라임 (sy=288): col0 x16  col1 x144
-//                         slime_0   slime_1
-//   Platform (sy=424):    x=305 (가로 중앙), w=446, h=59
-const CELL = 128;
+// 학습 포인트: drawImage 9인수 — (img, sx,sy,sw,sh, dx,dy,dw,dh) 로 소스 영역을 잘라내어 그림
+//
+// 시트 규격: 1496 × 704 px
+//   셀 가로 간격: 181 px / 좌측 여백: 24 px
+//   Row1 고양이  y=24,  h=178  char_w=170  | col 0~7: idle_0 idle_1 run_0 run_1 jump_0 jump_1 jump_2 fall
+//   Row2 강아지  y=219, h=175  char_w=170  | col 0~7: idle_0 idle_1 run_0 run_1 jump_0 jump_1 jump_2 fall
+//   Row3 몬스터  바닥 y=585    셀 간격 동일 | col 0~7: 슬라임×2 버섯×2 불꽃×2 유령×2
+//   Row4 플랫폼  y=593, h=94, w=640, 가로 중앙(x=428)
+
+// 셀 내 가로 중앙 정렬 좌표 계산
+// col: 0~7 / charW: 실제 스프라이트 폭
+const _CW = 181;
+const _PX = 24;
+const _cx = (col, charW) => _PX + col * _CW + Math.round((_CW - charW) / 2);
+
+// ── 캐릭터 프레임 ─────────────────────────────────────────────
+const CAT_SY = 24,  CAT_SH = 178, CAT_CW = 170;
+const DOG_SY = 219, DOG_SH = 175, DOG_CW = 170;
 
 const CHAR_FRAMES = {
   cat: {
     idle: [
-      { sx:  16, sy:  16, sw: CELL, sh: CELL },
-      { sx: 144, sy:  16, sw: CELL, sh: CELL },
+      { sx: _cx(0, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
+      { sx: _cx(1, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
     ],
     run: [
-      { sx: 272, sy:  16, sw: CELL, sh: CELL },
-      { sx: 400, sy:  16, sw: CELL, sh: CELL },
+      { sx: _cx(2, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
+      { sx: _cx(3, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
     ],
     jump: [
-      { sx: 528, sy:  16, sw: CELL, sh: CELL },
-      { sx: 656, sy:  16, sw: CELL, sh: CELL },
-      { sx: 784, sy: 16, sw: CELL, sh: CELL },
+      { sx: _cx(4, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
+      { sx: _cx(5, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
+      { sx: _cx(6, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
     ],
     fall: [
-      { sx: 912, sy:  16, sw: CELL, sh: CELL },
+      { sx: _cx(7, CAT_CW), sy: CAT_SY, sw: CAT_CW, sh: CAT_SH },
     ],
   },
   dog: {
     idle: [
-      { sx:  16, sy: 152, sw: CELL, sh: CELL },
-      { sx: 144, sy: 152, sw: CELL, sh: CELL },
+      { sx: _cx(0, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
+      { sx: _cx(1, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
     ],
     run: [
-      { sx: 272, sy: 152, sw: CELL, sh: CELL },
-      { sx: 400, sy: 152, sw: CELL, sh: CELL },
+      { sx: _cx(2, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
+      { sx: _cx(3, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
     ],
     jump: [
-      { sx: 528, sy: 152, sw: CELL, sh: CELL },
-      { sx: 656, sy: 152, sw: CELL, sh: CELL },
-      { sx: 784, sy: 152, sw: CELL, sh: CELL },
+      { sx: _cx(4, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
+      { sx: _cx(5, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
+      { sx: _cx(6, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
     ],
     fall: [
-      { sx: 912, sy: 152, sw: CELL, sh: CELL },
+      { sx: _cx(7, DOG_CW), sy: DOG_SY, sw: DOG_CW, sh: DOG_SH },
     ],
   },
 };
 
+// ── 몬스터 프레임 (Row3, 바닥 y=585 기준 bottom-align) ────────
+// 슬라임: col0(142×98), col1(141×74)
 const SLIME_FRAMES = [
-  { sx:  16, sy: 288, sw: CELL, sh: CELL },
-  { sx: 144, sy: 288, sw: CELL, sh: CELL },
+  { sx: _cx(0, 142), sy: 585 - 98,  sw: 142, sh: 98  },
+  { sx: _cx(1, 141), sy: 585 - 74,  sw: 141, sh: 74  },
+];
+// 버섯: col2(135×129), col3(135×129)
+const MUSHROOM_FRAMES = [
+  { sx: _cx(2, 135), sy: 585 - 129, sw: 135, sh: 129 },
+  { sx: _cx(3, 135), sy: 585 - 129, sw: 135, sh: 129 },
+];
+// 불꽃: col4(128×158), col5(128×166)
+const FLAME_FRAMES = [
+  { sx: _cx(4, 128), sy: 585 - 158, sw: 128, sh: 158 },
+  { sx: _cx(5, 128), sy: 585 - 166, sw: 128, sh: 166 },
+];
+// 유령: col6(128×121), col7(128×121)
+const GHOST_FRAMES = [
+  { sx: _cx(6, 128), sy: 585 - 121, sw: 128, sh: 121 },
+  { sx: _cx(7, 128), sy: 585 - 121, sw: 128, sh: 121 },
 ];
 
-const PLATFORM_FRAME = { sx: 305, sy: 424, sw: 445, sh: 59 };
+// ── 플랫폼 프레임 (Row4, 640×94, 가로 중앙) ──────────────────
+const PLATFORM_FRAME = { sx: 428, sy: 593, sw: 640, sh: 94 };
 
 // ── 애니메이션 프레임 카운트 (game.js 공용) ───────────────────
 const FRAME_COUNT = {
@@ -79,7 +105,7 @@ const FRAME_COUNT = {
 const Y_OFFSETS = {
   idle: [0,  3],
   run:  [0,  3],
-  jump: [-6, -6],
+  jump: [-6, -6, -6],
   fall: [ 3],
 };
 
@@ -113,17 +139,29 @@ function drawCharacter(ctx, charId, x, y, state, frame, facingR) {
   _drawFrame(ctx, src, x, y + yOff, CHAR_W, CHAR_H, !facingR);
 }
 
-// ── 슬라임 고블린 드로우 ──────────────────────────────────────
+// ── 적 드로우 ─────────────────────────────────────────────────
+function _enemyFrame(frameArr, intervalMs) {
+  return frameArr[Math.floor(Date.now() / intervalMs) % frameArr.length];
+}
+
 function drawSlimeEnemy(ctx, x, y, facingR) {
-  // Date.now() 기반으로 200ms마다 프레임 교체 (5fps)
-  const frame = Math.floor(Date.now() / 200) % 2;
-  _drawFrame(ctx, SLIME_FRAMES[frame], x, y, ENEMY_W, ENEMY_H, !facingR);
+  _drawFrame(ctx, _enemyFrame(SLIME_FRAMES, 200), x, y, ENEMY_W, ENEMY_H, !facingR);
+}
+function drawMushroomEnemy(ctx, x, y, facingR) {
+  _drawFrame(ctx, _enemyFrame(MUSHROOM_FRAMES, 200), x, y, ENEMY_W, ENEMY_H, !facingR);
+}
+function drawFlameEnemy(ctx, x, y, facingR) {
+  // 불꽃은 조금 더 빠르게 (150ms)
+  _drawFrame(ctx, _enemyFrame(FLAME_FRAMES, 150), x, y, ENEMY_W, ENEMY_H, !facingR);
+}
+function drawGhostEnemy(ctx, x, y, facingR) {
+  _drawFrame(ctx, _enemyFrame(GHOST_FRAMES, 200), x, y, ENEMY_W, ENEMY_H, !facingR);
 }
 
 // ── 발판 드로우 (3-슬라이스) ─────────────────────────────────
-// 학습 포인트: 9-slice/3-slice — 좌우 끝(캡)은 고정, 가운데만 반복해 어떤 폭에도 자연스럽게 보임
+// 학습 포인트: 좌우 끝(캡)은 고정, 가운데만 반복해 어떤 폭에도 자연스럽게 보임
 // PLAT_CAP: 소스 이미지에서 왼쪽(=오른쪽) 캡의 px 너비. 조정이 필요하면 이 값만 바꿀 것.
-const PLAT_CAP = 59; // 높이와 동일한 비율(정사각 캡)
+const PLAT_CAP = 94; // 플랫폼 높이(94)와 동일 비율(정사각 캡)
 
 function drawPlatformTile(ctx, x, y, w, h) {
   const img = SHEET.img;
@@ -134,30 +172,23 @@ function drawPlatformTile(ctx, x, y, w, h) {
   }
   const { sx, sy, sw, sh } = PLATFORM_FRAME;
 
-  // 소스 중앙 영역
   const midSrcX = sx + PLAT_CAP;
   const midSrcW = sw - PLAT_CAP * 2;
+  const capW    = Math.round(PLAT_CAP * (h / sh));
 
-  // 화면 캡 너비 = 소스 캡을 h 비율로 환산
-  const capW = Math.round(PLAT_CAP * (h / sh));
-
-  // 플랫폼이 좁아 캡 두 개로 꽉 차는 경우: 좌/우 캡만 절반씩
   if (w <= capW * 2) {
     const half = Math.floor(w / 2);
-    ctx.drawImage(img, sx,                    sy, PLAT_CAP, sh, x,          y, half,    h);
-    ctx.drawImage(img, sx + sw - PLAT_CAP,    sy, PLAT_CAP, sh, x + w - half, y, w - half, h);
+    ctx.drawImage(img, sx,                 sy, PLAT_CAP, sh, x,           y, half,      h);
+    ctx.drawImage(img, sx + sw - PLAT_CAP, sy, PLAT_CAP, sh, x + w - half, y, w - half, h);
     return;
   }
 
-  // 왼쪽 캡
-  ctx.drawImage(img, sx,              sy, PLAT_CAP, sh, x,          y, capW, h);
-  // 오른쪽 캡
+  ctx.drawImage(img, sx,                 sy, PLAT_CAP, sh, x,           y, capW, h);
   ctx.drawImage(img, sx + sw - PLAT_CAP, sy, PLAT_CAP, sh, x + w - capW, y, capW, h);
 
-  // 가운데 반복 타일
   const midDstX = x + capW;
   const midDstW = w - capW * 2;
-  const tileW   = Math.round(midSrcW * (h / sh)); // 중앙 소스를 h 비율로 환산한 타일 폭
+  const tileW   = Math.round(midSrcW * (h / sh));
   for (let px = 0; px < midDstW; px += tileW) {
     const drawW = Math.min(tileW, midDstW - px);
     const srcW  = Math.round(midSrcW * (drawW / tileW));
