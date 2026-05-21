@@ -23,7 +23,7 @@ function loadSprites() {
 
 // 셀 내 가로 중앙 정렬 좌표 계산
 // col: 0~7 / charW: 실제 스프라이트 폭
-const _CW = 181;
+const _CW = 182;
 const _PX = 24;
 const _cx = (col, charW) => _PX + col * _CW + Math.round((_CW - charW) / 2);
 
@@ -105,7 +105,7 @@ const FRAME_COUNT = {
 const Y_OFFSETS = {
   idle: [0,  3],
   run:  [0,  3],
-  jump: [-6, -6, -6],
+  jump: [0, 0, 0],
   fall: [ 3],
 };
 

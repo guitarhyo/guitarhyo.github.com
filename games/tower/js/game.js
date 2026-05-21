@@ -64,6 +64,8 @@ function resize() {
   canvas.height = LOGICAL_H;
   canvas.style.width  = `${LOGICAL_W * scale}px`;
   canvas.style.height = `${LOGICAL_H * scale}px`;
+  // 픽셀아트 스프라이트 스케일다운 시 인접 셀 블렌딩 방지
+  ctx.imageSmoothingEnabled = false;
 }
 window.addEventListener('resize', resize);
 resize();
@@ -715,7 +717,7 @@ function loop(timestamp) {
   requestAnimationFrame(loop);
 }
 
-Promise.all([loadI18n(), loadSprites()]).then(() => {
+Promise.all([loadI18n(), loadSprites(), loadBgAssets()]).then(() => {
   initBgClouds();
   requestAnimationFrame(loop);
 });
