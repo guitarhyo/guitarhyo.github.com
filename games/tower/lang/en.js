@@ -1,5 +1,5 @@
 var _LANG_EN = {
-  "title": "Cloud Tower Knights",
+  "title": "Jump Tower Knights",
   "tap_to_start": "Tap to Start",
   "best": "Best",
   "select_prompt": "Choose Your Knight",
@@ -10,11 +10,9 @@ var _LANG_EN = {
   "stat_height": "Height",
   "stat_kills": "Kills",
   "cat_name": "Cat Knight",
-  "cat_desc": "Fast aerial combo specialist",
+  "cat_desc": "Double jump on kill",
+  "cat_special": "Defeat enemies to rocket upward!",
   "dog_name": "Dog Knight",
-  "dog_desc": "Heavy range attack specialist",
-  "spd_fast": "Speed ★★★",
-  "spd_slow": "Speed ★★☆",
-  "range_wide": "Range ★★★",
-  "range_narrow": "Range ★☆☆"
+  "dog_desc": "Air double jump",
+  "dog_special": "Tap mid-air to jump again!"
 };

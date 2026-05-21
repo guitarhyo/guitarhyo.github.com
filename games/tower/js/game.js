@@ -26,30 +26,28 @@ const ENEMY_SPAWN_MIN_HEIGHT = 150;
 // ── 캐릭터 정의 ────────────────────────────────────────────
 const CHARACTERS = {
   cat: {
-    id:           'cat',
-    name:         '냥이 검사',
-    icon:         '🐱',
-    desc:         '빠른 공중 콤보 특화',
-    moveSpeed:    170,
-    jumpPower:    -680,
-    bounceBase:   -520,
-    bounceBonus:   20,   // 콤보당 반동 증가량
-    bounceMax:    -680,
-    comboTimeout:  2.0,
-    attackRange:   0,    // 기본 판정 (스프라이트 크기 그대로)
+    id:          'cat',
+    icon:        '🐱',
+    moveSpeed:   170,
+    jumpPower:   -680,
+    comboTimeout: 2.0,
+    attackRange:  0,
+    // 특성: 적 처치 시 점프력 2배 반동 (bounceMax 로 상한 제한)
+    bounceMax:   -1000,
+    airJumps:     0,
   },
   dog: {
-    id:           'dog',
-    name:         '멍멍이 검사',
-    icon:         '🐶',
-    desc:         '묵직한 범위 공격 특화',
-    moveSpeed:    140,   // 느림
-    jumpPower:    -620,  // 낮은 점프
-    bounceBase:   -580,  // 강한 단타 반동
-    bounceBonus:   10,   // 콤보 증가량 낮음 (대신 기본이 강함)
-    bounceMax:    -680,
-    comboTimeout:  1.5,  // 콤보 유지 시간 짧음
-    attackRange:   12,   // 판정 범위 12px 확장 → 범위형 공격
+    id:          'dog',
+    icon:        '🐶',
+    moveSpeed:   140,
+    jumpPower:   -620,
+    bounceBase:  -580,
+    bounceBonus:  10,
+    bounceMax:   -680,
+    comboTimeout: 1.5,
+    attackRange:  12,   // 판정 범위 12px 확장 → 범위형 공격
+    // 특성: 공중에서 한 번 더 점프 가능
+    airJumps:     1,
   },
 };
 
@@ -81,6 +79,7 @@ const player = {
   vx: 0,
   vy: 0,
   onGround: false,
+  jumpsLeft: 0, // 멍멍이 2단 점프 잔여 횟수
 };
 
 // ── 점수 ───────────────────────────────────────────────────
@@ -244,23 +243,25 @@ function checkEnemyCollisions() {
   }
 }
 
-// 콤보 누적 → 반동력 증가 (최대 BOUNCE_MAX 까지)
 function enemyHitBounce() {
   combo.count++;
   combo.timer = 0;
   score.kills++;
 
-  const power = Math.max(currentChar.bounceMax,
-                         currentChar.bounceBase - combo.count * currentChar.bounceBonus);
+  let power;
+  if (currentChar.id === 'cat') {
+    // 냥이 특성: 적 처치 시 점프력 2배 반동
+    power = Math.max(currentChar.bounceMax, currentChar.jumpPower * 2);
+  } else {
+    // 멍멍이: 콤보에 따라 강해지는 반동 + 공중 점프 횟수 리셋
+    power = Math.max(currentChar.bounceMax,
+                     currentChar.bounceBase - combo.count * currentChar.bounceBonus);
+    player.jumpsLeft = currentChar.airJumps;
+  }
   player.vy       = power;
   player.onGround = false;
 
-  // 이펙트: 처치 위치에 파티클 + 콤보 수에 비례한 흔들림
-  spawnKillParticles(
-    player.x + player.w / 2,
-    player.y + player.h / 2,
-    combo.count
-  );
+  spawnKillParticles(player.x + player.w / 2, player.y + player.h / 2, combo.count);
   triggerShake(3 + Math.min(combo.count, 5), 0.15);
 }
 
@@ -330,8 +331,9 @@ function updatePlayer(dt) {
 
 function jump() {
   if (!player.onGround) return;
-  player.vy       = currentChar.jumpPower;
-  player.onGround = false;
+  player.vy        = currentChar.jumpPower;
+  player.onGround  = false;
+  player.jumpsLeft = currentChar.airJumps; // 착지 점프 시 공중 횟수 리셋
 }
 
 // ── 플레이어 애니메이터 ────────────────────────────────────
@@ -370,11 +372,12 @@ function updateAnim(dt) {
 
 // ── 게임 리셋 ──────────────────────────────────────────────
 function resetGame() {
-  player.x        = LOGICAL_W / 2 - 18;
-  player.y        = FLOOR_WORLD_Y - player.h;
-  player.vx       = 0;
-  player.vy       = 0;
-  player.onGround = false;
+  player.x         = LOGICAL_W / 2 - 18;
+  player.y         = FLOOR_WORLD_Y - player.h;
+  player.vx        = 0;
+  player.vy        = 0;
+  player.onGround  = false;
+  player.jumpsLeft = 0;
   cameraY         = 0;
   enemies.length  = 0;
   combo.count     = 0;
@@ -448,7 +451,14 @@ function update(dt) {
     return;
   }
 
-  input.anyTapDown = false; // playing 중에는 사용 안 함
+  // 멍멍이 특성: 공중에서 새 탭 감지 시 2단 점프
+  // 학습 포인트: anyTapDown 은 pointerdown 이 발생한 프레임에만 true → 탭 순간 1회만 반응
+  if (input.anyTapDown && currentChar.id === 'dog' && !player.onGround && player.jumpsLeft > 0) {
+    player.jumpsLeft--;
+    player.vy = currentChar.jumpPower * 0.85; // 기본 점프보다 약간 약하게
+    triggerShake(1, 0.08);
+  }
+  input.anyTapDown = false;
 
   updatePlayer(dt);
   updateAnim(dt);
@@ -622,14 +632,13 @@ function drawSelectScreen() {
     ctx.font = 'bold 16px system-ui';
     ctx.fillText(ch.icon + ' ' + t(ch.id + '_name'), cx, spriteY + 60);
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#a0cfff';
     ctx.font = '12px system-ui';
     ctx.fillText(t(ch.id + '_desc'), cx, spriteY + 80);
 
-    ctx.fillStyle = '#a0cfff';
+    ctx.fillStyle = '#f0d060';
     ctx.font = '11px system-ui';
-    ctx.fillText(ch.id === 'cat' ? t('spd_fast') : t('spd_slow'), cx, spriteY + 100);
-    ctx.fillText(ch.id === 'cat' ? t('range_narrow') : t('range_wide'), cx, spriteY + 116);
+    ctx.fillText(t(ch.id + '_special'), cx, spriteY + 100);
   });
 
   ctx.fillStyle = '#a0cfff';

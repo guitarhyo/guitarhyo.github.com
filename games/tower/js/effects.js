@@ -16,7 +16,7 @@ const CLOUD_COUNT = CLOUD_META.length; // 5
 
 function loadBgAssets() {
   const tasks = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     const idx = i;
     tasks.push(new Promise(resolve => {
       const img = new Image();
